@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3:*)",
+      "Bash(/Users/marcellosusanto/Desktop/Project/random_learning/shapley_value_break/venv/bin/pip install:*)",
+      "Bash(git --version:*)",
+      "Bash(git config:*)",
+      "Bash(gh auth status:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(python /Users/marcellosusanto/Desktop/Project/.claude/skills/project-manager/scripts/scan_dependencies.py:*)",
+      "Bash(pip freeze:*)",
+      "Bash(python:*)",
+      "Bash(ruff check:*)",
+      "Bash(git -C /Users/marcellosusanto/Desktop/Project/random_learning rev-parse --show-toplevel:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git reset:*)",
+      "Bash(git commit:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git checkout:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(PYTHONPATH=/Users/marcellosusanto/Desktop/Project/random_learning/shapley_value_break python:*)",
+      "Read(//Users/marcellosusanto/Desktop/Project/.claude/skills/**)",
+      "Bash(ln:*)",
+      "WebFetch(domain:medium.com)",
+      "WebFetch(domain:data2decisions.substack.com)",
+      "WebFetch(domain:glasp.co)",
+      "WebFetch(domain:www.dratings.com)"
+    ]
+  }
+}
