@@ -1,0 +1,95 @@
+%%{init: {'theme': 'base', 'themeVariables': { 'primaryColor': '#4F46E5', 'primaryTextColor': '#fff', 'primaryBorderColor': '#3730A3', 'lineColor': '#6366F1', 'secondaryColor': '#E0E7FF', 'tertiaryColor': '#C7D2FE'}}}%%
+flowchart TB
+    subgraph INPUT["📥 Input Layer"]
+        USER([👤 User Message])
+        SKILLS[(📚 Skills Files)]
+        MEMORY[(🧠 Memory Files)]
+    end
+
+    subgraph MIDDLEWARE["⚙️ Middleware Stack (Order Matters)"]
+        direction TB
+        M1[1️⃣ TodoListMiddleware<br/>Planning & Task Tracking]
+        M2[2️⃣ MemoryMiddleware<br/>Load AGENTS.md Context]
+        M3[3️⃣ SkillsMiddleware<br/>Inject Custom Instructions]
+        M4[4️⃣ FilesystemMiddleware<br/>File Tools: ls/read/write/edit]
+        M5[5️⃣ SubAgentMiddleware<br/>Spawn Isolated Agents]
+        M6[6️⃣ SummarizationMiddleware<br/>Context Management]
+        M7[7️⃣ PromptCachingMiddleware<br/>Anthropic Cache Optimization]
+        M8[8️⃣ PatchToolCallsMiddleware<br/>Tool Call Normalization]
+        M1 --> M2 --> M3 --> M4 --> M5 --> M6 --> M7 --> M8
+    end
+
+    subgraph AGENT["🧠 LangGraph Agent Loop"]
+        direction TB
+        LLM[/"🤖 LLM Call<br/>(Claude/GPT/Gemini/etc)"/]
+        DECIDE{Decision:<br/>Tools needed?}
+        LLM --> DECIDE
+    end
+
+    subgraph TOOLS["🔧 Tool Execution"]
+        direction TB
+        T_TODO["📋 write_todos<br/>Update task list"]
+        T_FS["📁 Filesystem<br/>ls/read/write/edit/glob/grep"]
+        T_EXEC["⚙️ execute<br/>Shell commands"]
+        T_TASK["🤖 task<br/>Spawn sub-agent"]
+        T_USER["🛠️ User Tools<br/>Custom tools"]
+    end
+
+    subgraph SUBAGENT["🔄 Sub-Agent (Isolated Context)"]
+        direction TB
+        SUB_SPAWN[Fresh Agent Instance]
+        SUB_WORK[Execute Autonomously]
+        SUB_RESULT[Compress Result]
+        SUB_SPAWN --> SUB_WORK --> SUB_RESULT
+    end
+
+    subgraph BACKEND["💾 Backend Layer"]
+        direction TB
+        B_STATE[(StateBackend<br/>Ephemeral)]
+        B_FS[(FilesystemBackend<br/>Local Disk)]
+        B_STORE[(StoreBackend<br/>Durable: Postgres/Redis)]
+        B_SANDBOX[(SandboxBackend<br/>Daytona/Modal/Runloop)]
+    end
+
+    subgraph OUTPUT["📤 Output Layer"]
+        RESPONSE([💬 Response to User])
+        CHECKPOINT[(💾 Checkpointer<br/>State Persistence)]
+    end
+
+    %% Connections
+    USER --> M1
+    SKILLS --> M3
+    MEMORY --> M2
+    M8 --> LLM
+    
+    DECIDE -->|No| RESPONSE
+    DECIDE -->|Yes| TOOLS
+    
+    T_TODO --> M1
+    T_FS --> BACKEND
+    T_EXEC --> B_SANDBOX
+    T_TASK --> SUBAGENT
+    T_USER --> LLM
+    
+    SUB_RESULT -->|Compressed Report| LLM
+    BACKEND --> LLM
+    
+    LLM --> CHECKPOINT
+    CHECKPOINT --> RESPONSE
+
+    %% Styling
+    classDef input fill:#DCFCE7,stroke:#16A34A,stroke-width:2px,color:#14532D
+    classDef middleware fill:#DBEAFE,stroke:#2563EB,stroke-width:2px,color:#1E3A8A
+    classDef agent fill:#FEF3C7,stroke:#F59E0B,stroke-width:2px,color:#78350F
+    classDef tools fill:#E0E7FF,stroke:#6366F1,stroke-width:2px,color:#3730A3
+    classDef subagent fill:#FCE7F3,stroke:#EC4899,stroke-width:2px,color:#9D174D
+    classDef backend fill:#F3E8FF,stroke:#9333EA,stroke-width:2px,color:#581C87
+    classDef output fill:#D1FAE5,stroke:#10B981,stroke-width:2px,color:#064E3B
+    
+    class USER,SKILLS,MEMORY input
+    class M1,M2,M3,M4,M5,M6,M7,M8 middleware
+    class LLM,DECIDE agent
+    class T_TODO,T_FS,T_EXEC,T_TASK,T_USER tools
+    class SUB_SPAWN,SUB_WORK,SUB_RESULT subagent
+    class B_STATE,B_FS,B_STORE,B_SANDBOX backend
+    class RESPONSE,CHECKPOINT output
